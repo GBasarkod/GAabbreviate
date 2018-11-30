@@ -72,10 +72,7 @@ colnames(Items) <- NULL
 #Set number of subscales. ncol = 1 in this case as there is only one subscale.
 Scale <- matrix(rowSums(Items), ncol = 1) 
 
-#FOR A QUESTIONNAIRE WITH MULTIPLE SUBSCALES
-#items = matrix(sample(1:5, nsubject*nitems, replace = TRUE), nrow = nsubject, ncol = nitems)
-#scales = cbind(rowSums(items[,1:10]), rowSums(items[,11:15])
-               
+            
 
 #RUN GA
 #Set the seed, so that your output it the same every time you run it.  
@@ -102,10 +99,43 @@ BGA$measure$items #Items 1, 3, 4, 8, 10
 
 # more detailed information about the GA run settings and results
 BGA$measure
+
+```
+
+#FOR A QUESTIONNAIRE WITH MULTIPLE SUBSCALES
+```{r}
+testdata <- fulltestdata[,c("ID","asp.7y12", "asp.14y12", "asp.21y12", "asp.28y12", "asp.35y12","asp.9y12", "asp.16y12", "asp.23y12", "asp.30y12", "asp.37y12","asp.11y12", "asp.18y12", "asp.25y12", "asp.32y12", "asp.39y12","asp.8y12", "asp.15y12", "asp.22y12", "asp.29y12", "asp.36y12","asp.10y12", "asp.17y12","asp.24y12","asp.31y12", "asp.38y12","asp.12y12", "asp.19y12","asp.26y12","asp.33y12", "asp.40y12","asp.13y12", "asp.20y12","asp.27y12","asp.34y12", "asp.41y12")]
+
+wealthnames <- c("asp.7y12", "asp.14y12", "asp.21y12", "asp.28y12", "asp.35y12")
+fameitems <- c("asp.9y12", "asp.16y12", "asp.23y12", "asp.30y12", "asp.37y12")
+imageitems <- c("asp.11y12", "asp.18y12", "asp.25y12", "asp.32y12", "asp.39y12")
+growthitems <- c("asp.8y12", "asp.15y12", "asp.22y12", "asp.29y12", "asp.36y12")
+relationshipitems <- c("asp.10y12", "asp.17y12","asp.24y12","asp.31y12", "asp.38y12")
+communityitems <- c("asp.12y12", "asp.19y12","asp.26y12","asp.33y12", "asp.40y12")
+healthitems <- c("asp.13y12", "asp.20y12","asp.27y12","asp.34y12", "asp.41y12")
+items = as.matrix(testdata[,c(-1)]) # all scale items minus the ID variable
+subscales = cbind(rowMeans(items[,colnames(items) %in% wealthnames]),
+                  rowMeans(items[,colnames(items) %in% fameitems]),
+                  rowMeans(items[,colnames(items) %in% imageitems]),
+                  rowMeans(items[,colnames(items) %in% growthitems]),
+                  rowMeans(items[,colnames(items) %in% relationshipitems]),
+                  rowMeans(items[,colnames(items) %in% communityitems]),
+                  rowMeans(items[,colnames(items) %in% healthitems]))
+# max items per subscale set to 3; increase itemCost in short increments to improve mean alpha; cross-validation set by default
+GAA3 = GAabbreviate(items, subscales, itemCost = 0.05, maxItems = 3, popSize = 200, maxiter = 300, run = 100, parallel=TRUE, seed=1111, impute = TRUE)
+
+
+#items = matrix(sample(1:5, nsubject*nitems, replace = TRUE), nrow = nsubject, ncol = nitems)
+#scales = cbind(rowSums(items[,1:10]), rowSums(items[,11:15])
 BGA$results
 BGA$best
 
+#FOR A QUESTIONNAIRE WITH MULTIPLE SUBSCALES
+#items = matrix(sample(1:5, nsubject*nitems, replace = TRUE), nrow = nsubject, ncol = nitems)
+#scales = cbind(rowSums(items[,1:10]), rowSums(items[,11:15])
+
 ```
+
 
 ###Cross-validation sample prep
 ```{r}
